@@ -1,4 +1,6 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+import numpy as np
+import json
 import torch
 import torchvision
 
@@ -43,6 +45,13 @@ class COCODataset(torchvision.datasets.coco.CocoDetection):
         super(COCODataset, self).__init__(root, ann_file)
         # sort indices for reproducible results
         self.ids = sorted(self.ids)
+        if "train" in ann_file:
+            self.is_train = True
+
+            with open("idx.json", "r") as f:
+                self.img_ids = json.load(f)
+
+            self.weights = np.load("weights.npy", allow_pickle=True)
 
         # filter images without detection annotations
         if remove_images_without_annotations:
@@ -66,6 +75,11 @@ class COCODataset(torchvision.datasets.coco.CocoDetection):
         self._transforms = transforms
 
     def __getitem__(self, idx):
+        if hasattr(self, "is_train") and self.is_train is True:
+            rand_idx = np.random.rand()
+            idx = np.argwhere(rand_idx <= self.weights)[0, 0]
+            idx = self.img_ids[idx]
+
         img, anno = super(COCODataset, self).__getitem__(idx)
 
         # filter crowd annotations
