@@ -80,7 +80,7 @@ class COCODataset(torchvision.datasets.coco.CocoDetection):
             idx = np.argwhere(np.random.rand() <= self.weights)[0, 0]
             # idx = self.img_ids[idx]
 
-        img, anno = super(COCODataset, self).__getitem__(idx)
+        img, anno = super(COCODataset, self).__getitem__(self.img_ids[str(idx)])
 
         # filter crowd annotations
         # TODO might be better to add an extra field
