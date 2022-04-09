@@ -76,9 +76,9 @@ class COCODataset(torchvision.datasets.coco.CocoDetection):
 
     def __getitem__(self, idx):
         if hasattr(self, "is_train") and self.is_train is True:
-            rand_idx = np.random.rand()
-            idx = np.argwhere(rand_idx <= self.weights)[0, 0]
-            idx = self.img_ids[idx]
+            # rand_idx = np.random.rand()
+            idx = np.argwhere(np.random.rand() <= self.weights)[0, 0]
+            # idx = self.img_ids[idx]
 
         img, anno = super(COCODataset, self).__getitem__(idx)
 
